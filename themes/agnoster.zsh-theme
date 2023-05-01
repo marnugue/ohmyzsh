@@ -216,7 +216,11 @@ prompt_hg() {
 
 # Dir: current working directory
 prompt_dir() {
-  prompt_segment blue $CURRENT_FG '%~'
+  # prompt_segment blue $CURRENT_FG '%~'
+  directories=($(basename "$(dirname "$(pwd)")" && basename "$(pwd)"))
+  EXPANSION=${(j:/:)directories}
+  prompt_segment blue 
+  echo -n $EXPANSION
 }
 
 # Virtualenv: current working virtualenv
