@@ -33,6 +33,7 @@
 # A few utility functions to make it easy and re-usable to draw segmented prompts
 
 CURRENT_BG='NONE'
+MAX_BRANCH_NAME_LEN=50
 
 case ${SOLARIZED_THEME:-dark} in
     light) CURRENT_FG='white';;
@@ -135,6 +136,14 @@ prompt_git() {
     elif [[ -e "${repo_path}/rebase" || -e "${repo_path}/rebase-apply" || -e "${repo_path}/rebase-merge" || -e "${repo_path}/../.dotest" ]]; then
       mode=" >R>"
     fi
+    
+    local char_count
+    char_count=$(command echo "$ref" | wc -c)
+
+    if [[ ${char_count} -gt $MAX_BRANCH_NAME_LEN ]] ; then
+      ref=$( command echo ${ref} | cut -c 1-30)
+      ref="${ref}..."
+    fi
 
     setopt promptsubst
     autoload -Uz vcs_info
@@ -216,11 +225,7 @@ prompt_hg() {
 
 # Dir: current working directory
 prompt_dir() {
-  # prompt_segment blue $CURRENT_FG '%~'
-  directories=($(basename "$(dirname "$(pwd)")" && basename "$(pwd)"))
-  EXPANSION=${(j:/:)directories}
-  prompt_segment blue 
-  echo -n $EXPANSION
+  prompt_segment blue $CURRENT_FG '%2~'
 }
 
 # Virtualenv: current working virtualenv
