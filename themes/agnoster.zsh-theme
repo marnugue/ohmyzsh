@@ -138,11 +138,10 @@ prompt_git() {
     fi
     
     local char_count
-    char_count=$(command echo "$ref" | wc -c)
+    char_count=${#ref}
 
     if [[ ${char_count} -gt $MAX_BRANCH_NAME_LEN ]] ; then
-      ref=$( command echo ${ref} | cut -c 1-30)
-      ref="${ref}..."
+      ref="${ref[1,30]}..."
     fi
 
     setopt promptsubst
